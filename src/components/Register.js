@@ -14,6 +14,8 @@ const Register = (props) => {
     const [password, setPassword] = useState(null);
     const [toastOpen, setToastOpen] = useState(false);
     const [toastMessage, setToastMessage] = useState('');
+    const [secQuest, setSecQuest] = useState(0);
+    const [answer, setAnswer] = useState(null);
     
     const handleRegister = () => {
         if (!name) {
@@ -35,6 +37,12 @@ const Register = (props) => {
             setToastOpen(true);
         } else if (!password.match(new RegExp(/[A-Z]/, 'gi'))){
             setToastMessage('A senha deve conter uma letra e um número');
+            setToastOpen(true);
+        } else if (!secQuest){
+            setToastMessage('Escolha uma pergunta de segurança');
+            setToastOpen(true);
+        } else if (!answer){
+            setToastMessage('Insira a resposta para a pergunta de segurança');
             setToastOpen(true);
         } else {
             dispatch(register({
@@ -65,6 +73,16 @@ const Register = (props) => {
                                type="password"
                                style={styles.input}
                                onChange={(e) => setPassword(e.target.value)}/>
+                    <Select variant="outlined" value={secQuest} style={{...styles.select, color: secQuest == 0  ? '#6c6c6c' : '#1e1e1e'}} onChange={(e) => setSecQuest(e.target.value)}>
+                        <MenuItem value={0} disabled style={{fontFamily: 'Gotham'}}>Pergunta de segurança</MenuItem>
+                        <MenuItem value={1} style={{fontFamily: 'Gotham'}}>P1</MenuItem>
+                        <MenuItem value={2} style={{fontFamily: 'Gotham'}}>P2</MenuItem>
+                        <MenuItem value={3} style={{fontFamily: 'Gotham'}}>P3</MenuItem>
+                    </Select>
+                    <TextField label="Resposta"
+                               variant="outlined"
+                               style={styles.input}
+                               onChange={(e) => setAnswer(e.target.value)}/>
                     <Button variant="outlined" 
                             style={styles.button}
                             onClick={handleRegister}>
