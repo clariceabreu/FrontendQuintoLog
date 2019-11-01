@@ -2,9 +2,9 @@ import React, { useState } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import { AccountCircle } from '@material-ui/icons'
 import {  Popover, Button } from '@material-ui/core';
-import '../assets/general/main.min.css';
-import { signOut } from '../actions/Authentication';
-import logo from '../assets/images/logo-quintolog.png';
+import '../../assets/general/main.min.css';
+import { signOut } from '../../actions/Authentication';
+import logo from '../../assets/images/logo-quintolog.png';
 
 const Header = (props) => {
     const dispatch = useDispatch();
@@ -42,7 +42,7 @@ const Header = (props) => {
                             <span style={styles.popOverLabels}>Token: {user.token}</span>
                         </div>
                         <div style={styles.popoverButtons}>
-                            <Button style={styles.buttonProfile} onClick={() => props.history.push('/profile')}>MEU PERFIL</Button>
+                            <Button style={styles.buttonProfile} onClick={() => props.history.push('/perfil')}>MEU PERFIL</Button>
                             <Button style={styles.buttonLogOut} onClick={() => dispatch(signOut())}>SAIR</Button>
                         </div>
                     </div>

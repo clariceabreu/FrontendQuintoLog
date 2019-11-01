@@ -2,7 +2,16 @@ export const INITIAL_STATE = {
     authentication: {
       token: 'idjisdjjiij',
       name: 'Clarice Abreu',
-      email: ''
+      email: '',
+      secQuest: 1,
+      secQuestAnswer: 'Minininho'
+    },
+    system: {
+        toast: {
+            open: false, 
+            type: '', 
+            message: ''
+        }
     },
     logs: [
         {

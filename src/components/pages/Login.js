@@ -1,9 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import '../assets/general/main.min.css';
+import '../../assets/general/main.min.css';
 import { useDispatch } from 'react-redux';
 import { Button, TextField } from '@material-ui/core';
-import logo from '../assets/images/logo-quintolog.png';
-import { signIn } from '../actions/Authentication';
+import logo from '../../assets/images/logo-quintolog.png';
+import { signIn } from '../../actions/Authentication';
+import Toast from '../common/Toast';
 
 const Login = (props) => {
     const dispatch = useDispatch();
@@ -39,13 +40,14 @@ const Login = (props) => {
                             onClick={handleSignIn}>
                         ENTRAR
                     </Button>
-                    <label style={styles.forgotPassword}>Esqueci a senha</label>
+                    <label style={styles.forgotPassword} onClick={() => props.history.push('/recuperarSenha')}>Esqueci a senha</label>
                     <div style={styles.regiterDiv}>
                         <span style={styles.register}>Não possui conta?</span>
-                        <span style={styles.forgotPassword} onClick={() => props.history.push('/register')}>Realizar cadastro</span>
+                        <span style={styles.forgotPassword} onClick={() => props.history.push('/cadastro')}>Realizar cadastro</span>
                     </div>
                 </div>
             </div>
+            <Toast/>
         </div>
     )
 }

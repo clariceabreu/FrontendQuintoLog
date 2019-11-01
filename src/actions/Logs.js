@@ -1,5 +1,6 @@
 import {TYPES} from '../store/types';
-import { Axios, ServerlessEndpoint } from '../utils';
+import { Axios } from '../utils';
+import { showToast } from './System';
 const {
     SET_LOGS,
 } = TYPES
@@ -14,7 +15,11 @@ export const getLogs = () => {
             })
         })
         .catch(() => {
-            
+            dispatch(showToast({
+                open: true,
+                message: 'Erro ao receber dados',
+                type: 'error'
+            }));
         });
     }
 }
@@ -38,7 +43,14 @@ export const updateLog = (body) => {
             })
         })
         .catch(() => {
-            
+            dispatch(showToast({
+                open: true,
+                message: 
+                    body.status == 'deleted' ? 'Erro ao apagar dado(s)' : 
+                    body.status == 'archived' ? 'Erro ao arquivar dado(s)' : 
+                        'Erro ao desarquivar dado(s)',
+                type: 'error'
+            }));
         });
     }
 }

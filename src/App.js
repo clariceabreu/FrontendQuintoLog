@@ -1,9 +1,10 @@
  import React from 'react';
-import Home from './components/Home';
-import Register from "./components/Register";
-import Login from "./components/Login";
-import LogInfo from "./components/LogInfo";
-import Profile from "./components/Profile";
+import Home from './components/pages/Home';
+import Register from "./components/pages/Register";
+import Login from "./components/pages/Login";
+import LogInfo from "./components/pages/LogInfo";
+import Profile from "./components/pages/Profile";
+import ForgotPassword from './components/pages/ForgotPassword';
 import { Provider } from 'react-redux';
 import {
     Router,
@@ -17,17 +18,20 @@ const history = createBrowserHistory();
 
 const App = () => {
     return (
+        <>
         <Provider store={store}>
             <Router history={history}>
                 <Switch>
                     <Route path="/login" exact={true} component={Login}/>
                     <Route path="/" exact={true} component={Home}/>
-                    <Route path="/register" exact={true} component={Register}/>
+                    <Route path="/cadastro" exact={true} component={Register}/>
                     <Route path="/logInfo/:id" exact={true} render={(props) => <LogInfo {...props}/>}/>
-                    <Route path="/profile" exact={true} component={Profile}/>
+                    <Route path="/perfil" exact={true} component={Profile}/>
+                    <Route path="/recuperarSenha" exact={true} component={ForgotPassword}/>
                 </Switch>
             </Router>
         </Provider>
+        </>
     )
 }
 

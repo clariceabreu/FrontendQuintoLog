@@ -1,10 +1,12 @@
 import React, { useState } from 'react';
 import { useDispatch } from 'react-redux';
-import '../assets/general/main.min.css';
-import { Button, TextField, Snackbar, IconButton, SnackbarContent, Select, MenuItem } from '@material-ui/core';
-import logo from '../assets/images/logo-quintolog.png';
-import { register } from '../actions/Authentication';
-import { Close, Error } from '@material-ui/icons';
+import '../../assets/general/main.min.css';
+import { Button, TextField, Select, MenuItem } from '@material-ui/core';
+import logo from '../../assets/images/logo-quintolog.png';
+import Toast from '../common/Toast';
+import { register } from '../../actions/Authentication';
+import { showToast } from '../../actions/System';
+
 
 const Register = (props) => {
     const dispatch = useDispatch();
@@ -12,38 +14,60 @@ const Register = (props) => {
     const [name, setName] = useState(null);
     const [email, setEmail] = useState(null);
     const [password, setPassword] = useState(null);
-    const [toastOpen, setToastOpen] = useState(false);
-    const [toastMessage, setToastMessage] = useState('');
     const [secQuest, setSecQuest] = useState(0);
     const [answer, setAnswer] = useState(null);
     
     const handleRegister = () => {
         if (!name) {
-            setToastMessage('Insira o nome');
-            setToastOpen(true);
+            dispatch(showToast({
+                open: true,
+                message: 'Insira o nome',
+                type: 'error'
+            }));
         }
         else if (!email) {
-            setToastMessage('Insira o e-mail');
-            setToastOpen(true);
+            dispatch(showToast({
+                open: true,
+                message: 'Insira o e-mail',
+                type: 'error'
+            }));
         }
         else if (!password) {
-            setToastMessage('Insira a senha');
-            setToastOpen(true);
+            dispatch(showToast({
+                open: true,
+                message: 'Insira o senha',
+                type: 'error'
+            }));
         } else if (password.length < 8){
-            setToastMessage('A senha deve conter no mínimo 8 caracteres');
-            setToastOpen(true);
+            dispatch(showToast({
+                open: true,
+                message: 'A senha deve conter no mínimo 8 caracteres',
+                type: 'error'
+            }));
         } else if (!password.match(new RegExp(/[0-9]/, 'g'))) {
-            setToastMessage('A senha deve conter uma letra e um número2');
-            setToastOpen(true);
+            dispatch(showToast({
+                open: true,
+                message: 'A senha deve conter uma letra e um número',
+                type: 'error'
+            }));
         } else if (!password.match(new RegExp(/[A-Z]/, 'gi'))){
-            setToastMessage('A senha deve conter uma letra e um número');
-            setToastOpen(true);
+            dispatch(showToast({
+                open: true,
+                message: 'A senha deve conter uma letra e um número',
+                type: 'error'
+            }));
         } else if (!secQuest){
-            setToastMessage('Escolha uma pergunta de segurança');
-            setToastOpen(true);
+            dispatch(showToast({
+                open: true,
+                message: 'Escolha uma pergunta de segurança',
+                type: 'error'
+            }));
         } else if (!answer){
-            setToastMessage('Insira a resposta para a pergunta de segurança');
-            setToastOpen(true);
+            dispatch(showToast({
+                open: true,
+                message: 'Insira a resposta para a pergunta de segurança',
+                type: 'error'
+            }));
         } else {
             dispatch(register({
                 email: email,
@@ -51,8 +75,6 @@ const Register = (props) => {
             }));
         }
     }
-
-    const closeToast = () => setToastOpen(false);
 
     return (
         <div style={styles.container}>
@@ -75,9 +97,9 @@ const Register = (props) => {
                                onChange={(e) => setPassword(e.target.value)}/>
                     <Select variant="outlined" value={secQuest} style={{...styles.select, color: secQuest == 0  ? '#6c6c6c' : '#1e1e1e'}} onChange={(e) => setSecQuest(e.target.value)}>
                         <MenuItem value={0} disabled style={{fontFamily: 'Gotham'}}>Pergunta de segurança</MenuItem>
-                        <MenuItem value={1} style={{fontFamily: 'Gotham'}}>P1</MenuItem>
-                        <MenuItem value={2} style={{fontFamily: 'Gotham'}}>P2</MenuItem>
-                        <MenuItem value={3} style={{fontFamily: 'Gotham'}}>P3</MenuItem>
+                        <MenuItem value={1} style={{fontFamily: 'Gotham'}}>Qual era o nome de seu professor favorito na escola primária? </MenuItem>
+                        <MenuItem value={2} style={{fontFamily: 'Gotham'}}>Qual era o nome do seu primeiro animal de estimacão?</MenuItem>
+                        <MenuItem value={3} style={{fontFamily: 'Gotham'}}>Qual foi o primeiro filme que você viu no cinema?</MenuItem>
                     </Select>
                     <TextField label="Resposta"
                                variant="outlined"
@@ -88,34 +110,7 @@ const Register = (props) => {
                             onClick={handleRegister}>
                         Cadastrar
                     </Button>
-                    <Snackbar
-                        anchorOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right',
-                        }}
-                        open={toastOpen}
-                        autoHideDuration={6000}
-                        onClose={closeToast}>
-                             <SnackbarContent
-                                aria-describedby="client-snackbar"
-                                style={{backgroundColor: '#d32f2f'}}
-                                message={
-                                    <div id="client-snackbar" style={{display: 'flex'}}>
-                                        <Error style={{marginRight: 5}}/>
-                                        <span style={{marginTop: 3}}>{toastMessage}</span>
-                                    </div>
-                                }
-                                action={[
-                                    <IconButton
-                                        key="close"
-                                        aria-label="Close"
-                                        color="inherit"
-                                        onClick={closeToast}>
-                                        <Close />
-                                    </IconButton>
-                                ]}
-                            />
-                    </Snackbar>
+                    <Toast/>
                 </div>
             </div>
         </div>

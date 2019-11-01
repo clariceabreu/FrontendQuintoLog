@@ -1,8 +1,8 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector } from 'react-redux';
-import '../assets/general/main.min.css';
+import '../../assets/general/main.min.css';
 import { ChevronLeft } from '@material-ui/icons';
-import Header from '../components/Header';
+import Header from '../../components/common/Header';
 import { Redirect } from 'react-router-dom'
 
 const LogInfo = (props) => {

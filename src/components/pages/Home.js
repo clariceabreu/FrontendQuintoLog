@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
-import '../assets/general/main.min.css';
+import '../../assets/general/main.min.css';
 import { Button, TextField, IconButton, Select, MenuItem, InputAdornment, Paper, Table,
         TableBody, TableHead, TableCell, TableRow, Checkbox, TablePagination, TableFooter} from '@material-ui/core';
 import { Search } from '@material-ui/icons';
-import Header from '../components/Header';
-import { getLogs, updateLog } from '../actions/Logs';
-import { getUsers } from '../actions/Users';
+import Header from '../common/Header';
+import Toast from '../common/Toast';
+import { showToast } from '../../actions/System';
+import { getLogs, updateLog } from '../../actions/Logs';
+import { getUsers } from '../../actions/Users';
 import { Redirect } from 'react-router-dom'
 import u from 'underscore';
 
@@ -47,10 +49,15 @@ const Home = (props) => {
             rows.forEach(r => {
                 if (r.checked) dispatch(updateLog({
                     id: r.id,
-                    status: 'archived'
+                    status: showArchives ? 'active' : 'archived'
                 }));
             })
-        } //else TOAST
+        } else
+            dispatch(showToast({
+                open: true,
+                message: 'Selecione pelo menos um item',
+                type: 'error'
+            }));
     }
 
     const handleDelete = () => {
@@ -58,10 +65,15 @@ const Home = (props) => {
             rows.forEach(r => {
                 if (r.checked) dispatch(updateLog({
                     id: r.id,
-                    active: 'deleted'
+                    status: 'deleted'
                 }));
             })
-        } //else TOAST
+        } else 
+            dispatch(showToast({
+                open: true,
+                message: 'Selecione pelo menos um item',
+                type: 'error'
+            }));
     }
 
     const handleShowArchiveds = () => {
@@ -93,7 +105,7 @@ const Home = (props) => {
         <>            
             {user.token ?
             <div style={styles.container}>
-                <Header/>
+                <Header {...props} />
                 <div style={styles.content}>
                     <div style={styles.filter}>
                         <div style={{display: 'flex'}}>
@@ -179,6 +191,7 @@ const Home = (props) => {
                         </Table>
                     </Paper>
                 </div>
+                <Toast/>
             </div> : <Redirect to='/login'/>}
         </>
     )
