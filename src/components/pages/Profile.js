@@ -38,7 +38,9 @@ const Profile = (props) => {
         } else {
             dispatch(updateUser({
                 email: email,
-                password: password
+                name: name, 
+                securityQuestion: secQuest,
+                securityAnswer: answer
             }));
         }
     }

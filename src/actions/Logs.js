@@ -7,14 +7,15 @@ const {
 
 export const getLogs = () => {
     return (dispatch) => {
-        Axios.get( 'PATH' )
+        Axios.get('/log')
         .then((response) => {
             dispatch({
                 type: SET_LOGS,
                 payload: response.data
             })
         })
-        .catch(() => {
+        .catch((error) => {
+            console.log(error);
             dispatch(showToast({
                 open: true,
                 message: 'Erro ao receber dados',
@@ -28,7 +29,7 @@ export const updateLog = (body) => {
     return (dispatch, getState) => {
         const { logs } = getState();
 
-        Axios.post( 'PATH' , body)
+        Axios.put('/log', body)
         .then((response) => {
             let result = [...logs];
             if (body.status == 'deleted') result = logs.filter(l => l.id != response.data)
@@ -42,7 +43,8 @@ export const updateLog = (body) => {
                 payload: result
             })
         })
-        .catch(() => {
+        .catch((error) => {
+            console.log(error);
             dispatch(showToast({
                 open: true,
                 message: 

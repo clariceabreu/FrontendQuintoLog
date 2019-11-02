@@ -43,7 +43,10 @@ const ForgotPassword = (props) => {
         } else {
             dispatch(recoverPassword({
                 email: email,
-                password: password
+                password: password,
+                name: name,
+                securityQuestions: secQuest,
+                securityAnswer: answer
             }));
         }
     }

@@ -2,16 +2,24 @@ import {TYPES} from '../store/types';
 import { Axios } from '../utils';
 import { showToast } from './System';
 const {
-    SET_AUTHENTICATION
+    SET_AUTHENTICATION,
+    SET_TOKEN
 } = TYPES
 
-export const register = (body) => {
+export const register = (data) => {
+    let body = {...data};
+    delete body.history;
     return (dispatch) => {
-        Axios.post( 'PATH' , body)
+        Axios.post('/user', body)
         .then((response) => {
             dispatch({
                 type: SET_AUTHENTICATION,
                 payload: response.data
+            })
+            signIn({
+                email: body.email,
+                password: body.password,
+                history: data.history
             })
         })
         .catch(() => {
@@ -24,33 +32,38 @@ export const register = (body) => {
     }
 }
 
-export const signIn = (body) => {
+export const signIn = (data) => {
+    const body = {...data};
+    delete body.history;
     return (dispatch) => {
-        // Axios.post( 'PATH' , body)
-        // .then((/oauth/token) => {
-        //     dispatch({
-        //         type: SET_AUTHENTICATION,
-        //         payload: response.data
-        //     })
-        // })
-        // .catch(() => {
-            // dispatch(showToast({
-            //     open: true,
-            //     message: 'Erro ao efetuar login',
-            //     type: 'error'
-            // }));
-        // });
+        Axios.post( '/oauth/token', body)
+        .then(response => {
+            dispatch({
+                type: SET_TOKEN,
+                payload: response.data
+            })
 
-        dispatch({
-            type: SET_AUTHENTICATION,
-            payload: {
-                token: 'jsjsjsjsjsjjsjsjjsjsjajaj',
-                name: 'Clarice'
-            }
+            Axios.get('/user?email=' + body.email)
+            .then(response => {
+                dispatch({
+                    type: SET_AUTHENTICATION,
+                    payload: response.data
+                })
+
+                data.history.push('/');
+            })
+            .catch((error) => {
+                throw error;
+            });
         })
-
-        body.history.push('/');
-        
+        .catch((error) => {
+            console.log(error);
+            dispatch(showToast({
+                open: true,
+                message: 'Erro ao efetuar login',
+                type: 'error'
+            }));
+        });        
     }
 }
 
@@ -65,7 +78,7 @@ export const signOut = () => {
 
 export const updateUser = (body) => {
     return (dispatch) => {
-        Axios.put( 'PATH' , body)
+        Axios.put('/user' , body)
         .then((response) => {
             dispatch(showToast({
                 open: true,
@@ -85,7 +98,7 @@ export const updateUser = (body) => {
 
 export const changePassword = (body) => {
     return (dispatch) => {
-        Axios.put( 'PATH' , body)
+        Axios.put('/changePassword' , body)
         .then((response) => {
             dispatch(showToast({
                 open: true,
@@ -105,7 +118,7 @@ export const changePassword = (body) => {
 
 export const recoverPassword = (body) => {
     return (dispatch) => {
-        Axios.put( 'PATH' , body)
+        Axios.put('/recoverPassword' , body)
         .then((response) => {
             dispatch(showToast({
                 open: true,

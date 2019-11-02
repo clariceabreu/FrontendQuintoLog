@@ -74,7 +74,8 @@ const Register = (props) => {
                 password: password,
                 name: name,
                 securityQuestion: secQuest,
-                securityAnswer: answer
+                securityAnswer: answer,
+                history: props.history
             }));
         }
     }

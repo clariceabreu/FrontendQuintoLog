@@ -1,6 +1,7 @@
 export const TYPES = {
     //AUTHENTICATION
-    SET_AUTHENTICATION: 'SET_AUTHENTICATION',
+    SET_AUTHENTICATION: 'set_authentication',
+    SET_TOKEN: 'set_token',
     
     //LOGS
     SET_LOGS: 'set_logs',
