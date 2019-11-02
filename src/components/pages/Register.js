@@ -71,7 +71,10 @@ const Register = (props) => {
         } else {
             dispatch(register({
                 email: email,
-                password: password
+                password: password,
+                name: name,
+                securityQuestion: secQuest,
+                securityAnswer: answer
             }));
         }
     }
