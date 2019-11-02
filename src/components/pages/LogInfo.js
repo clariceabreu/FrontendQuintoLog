@@ -20,7 +20,7 @@ const LogInfo = (props) => {
                 <>
                 {userLogged.token ?
                 <div>
-                        <Header />
+                        <Header {...props}/>
                         <div>
                                 {console.log(props)}
                                 <div style={styles.back} onClick={() => props.history.push({pathname: '/'})}>
