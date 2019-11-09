@@ -1,8 +1,9 @@
-import {TYPES} from '../store/types';
+import { TYPES, SET_AUTHENTICATION, SET_TOKEN } from '../store/types';
 import { Axios } from '../utils';
 import { showToast } from './System';
 const {
-    SET_AUTHENTICATION
+    SET_AUTHENTICATION,
+    SET_TOKEN
 } = TYPES
 
 export const register = (data) => {
