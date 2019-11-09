@@ -9,4 +9,4 @@ const Axios = axios.create({
     headers: {'Authorization': 'barear '+ user.token}
 });
 
-export { Axios, Moment };
+export { Axios };
