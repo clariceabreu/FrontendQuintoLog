@@ -20,6 +20,9 @@
     "redux-thunk": "^2.3.0",
     "underscore": "^1.9.1"
   },
+  "engines": {
+    "node": "10.15.0"
+  },
   "scripts": {
     "start": "react-scripts start",
     "build": "react-scripts build",
