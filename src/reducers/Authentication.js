@@ -1,4 +1,4 @@
-import { TYPES } from '../store/types';
+import { TYPES, SET_AUTHENTICATION, SET_TOKEN } from '../store/types';
 import { INITIAL_STATE } from '../store/states'
 const {  SET_AUTHENTICATION } = TYPES;
 
