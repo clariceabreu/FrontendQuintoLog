@@ -1,4 +1,4 @@
-import { TYPES } from '../store/types';
+import TYPES from '../store/types';
 import { Axios } from '../utils';
 import { showToast } from './System';
 const {
