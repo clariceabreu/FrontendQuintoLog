@@ -7,7 +7,7 @@ const {
 
 export const getLogs = () => {
     return (dispatch) => {
-        Axios.get('/log')
+        Axios.get('/v1/logs')
         .then((response) => {
             dispatch({
                 type: SET_LOGS,
@@ -29,7 +29,7 @@ export const updateLog = (body) => {
     return (dispatch, getState) => {
         const { logs } = getState();
 
-        Axios.put('/log', body)
+        Axios.put('/v1/logs', body)
         .then((response) => {
             let result = [...logs];
             if (body.status == 'deleted') result = logs.filter(l => l.id != response.data)

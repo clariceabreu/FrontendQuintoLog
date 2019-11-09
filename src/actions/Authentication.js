@@ -9,7 +9,7 @@ export const register = (data) => {
     let body = {...data};
     delete body.history;
     return (dispatch) => {
-        Axios.post('/user', body)
+        Axios.post('/users', body)
         .then((response) => {
             dispatch({
                 type: SET_AUTHENTICATION,
@@ -42,7 +42,7 @@ export const signIn = (data) => {
                 payload: response.data
             })
 
-            Axios.get('/user?email=' + body.email)
+            Axios.get('/users?email=' + body.email)
             .then(response => {
                 dispatch({
                     type: SET_AUTHENTICATION,
@@ -77,7 +77,7 @@ export const signOut = () => {
 
 export const updateUser = (body) => {
     return (dispatch) => {
-        Axios.put('/user' , body)
+        Axios.put('/users' , body)
         .then((response) => {
             dispatch(showToast({
                 open: true,
