@@ -1,9 +1,9 @@
-import TYPES from '../store/types';
+import { TYPES } from '../store/types';
 import { Axios } from '../utils';
 import { showToast } from './System';
 const {
     SET_AUTHENTICATION,
-    SET_TOKEN
+    TYPES.SET_TOKEN
 } = TYPES
 
 export const register = (data) => {
@@ -39,7 +39,7 @@ export const signIn = (data) => {
         Axios.post( '/oauth/token', body)
         .then(response => {
             dispatch({
-                type: SET_TOKEN,
+                type: TYPES.SET_TOKEN,
                 payload: response.data
             })
 
