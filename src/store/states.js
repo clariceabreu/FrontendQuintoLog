@@ -1,10 +1,10 @@
 export const INITIAL_STATE = {
     authentication: {
-      token: 'idjisdjjiij',
-      name: 'Clarice Abreu',
+      token: '',
+      name: '',
       email: '',
-      secQuest: 1,
-      secQuestAnswer: 'Minininho'
+      secQuest: '',
+      secQuestAnswer: ''
     },
     system: {
         toast: {

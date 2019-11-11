@@ -18,7 +18,6 @@ const history = createBrowserHistory();
 
 const App = () => {
     return (
-        <>
         <Provider store={store}>
             <Router history={history}>
                 <Switch>
@@ -31,7 +30,6 @@ const App = () => {
                 </Switch>
             </Router>
         </Provider>
-        </>
     )
 }
 

@@ -8,9 +8,11 @@ const {
 export const register = (data) => {
     let body = {...data};
     delete body.history;
+    console.log(body);
     return (dispatch) => {
         Axios.post('/users', body)
         .then((response) => {
+            console.log(response);
             dispatch({
                 type: SET_AUTHENTICATION,
                 payload: response.data
@@ -35,8 +37,10 @@ export const signIn = (data) => {
     const body = {...data};
     delete body.history;
     return (dispatch) => {
+        console.log(body);
         Axios.post( '/oauth/token', body)
         .then(response => {
+            console.log(response)
             dispatch({
                 type: TYPES.SET_TOKEN,
                 payload: response.data
