@@ -46,6 +46,8 @@ export const signIn = (data) => {
                 payload: response.data
             })
 
+            console.log("test");
+
             Axios.get('/users?email=' + body.email)
             .then(response => {
                 dispatch({
