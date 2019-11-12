@@ -38,7 +38,7 @@ export const signIn = (data) => {
     delete body.history;
     return (dispatch) => {
         console.log(body);
-        Axios.post( '/oauth/token', body)
+        Axios.post( '/oauth/token/', body)
         .then(response => {
             console.log(response)
             dispatch({
