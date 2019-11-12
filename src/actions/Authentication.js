@@ -41,7 +41,7 @@ export const signIn = (data) => {
         // Axios.post( 'http://quinto-log-back.herokuapp.com/oatuh/token', body, {
         //     headers: {'Content-Type': 'application/json'}
         // })
-        Axios.get('https://quinto-log-back.herokuapp.com/v1/users', {
+        Axios.get('https://cors-anywhere.herokuapp.com/http://quinto-log-back.herokuapp.com/v1/users', {
             headers: { 'Access-Control-Allow-Origin': '*' }
         })
         .then(response => {
