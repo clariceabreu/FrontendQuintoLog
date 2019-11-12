@@ -114,6 +114,7 @@ const Register = (props) => {
                             onClick={handleRegister}>
                         Cadastrar
                     </Button>
+                    <label style={styles.backButton} onClick={() => props.history.push('/login')}>Voltar</label>
                     <Toast/>
                 </div>
             </div>
@@ -165,6 +166,14 @@ const styles = {
     },
     toast: {
         backgroundColor: '#d32f2f'
-    }
+    },
+    backButton: {
+        fontFamily: 'Gotham',
+        textDecoration: 'underline',
+        textAlign: 'center',
+        marginTop: 20,
+        color: 'blue',
+        cursor: 'pointer'
+    },
 }
 export default Register;

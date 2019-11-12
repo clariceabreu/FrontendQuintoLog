@@ -7,7 +7,10 @@ import 'moment/locale/pt-br';
 
 const Axios = axios.create({
     baseURL: 'http://quinto-log-back.herokuapp.com/',
-    //headers: {'Authorization': 'Barear '} //+ user.token}
+    headers: { 
+        'Content-Type': 'application/json', 
+    }
+    //{'Authorization': 'Barear '} //+ user.token}
 });
 
 export { Axios };

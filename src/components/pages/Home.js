@@ -15,13 +15,15 @@ import u from 'underscore';
 const Home = (props) => {
     const dispatch = useDispatch();
 
-    useEffect(() => {
-        dispatch(getLogs());
-        dispatch(getUsers());
-    }, []);
-
     const logs = useSelector(state => state.logs);
     const user = useSelector(state => state.authentication);
+
+    useEffect(() => {
+        if (user.token) {
+            dispatch(getLogs());
+            dispatch(getUsers());
+        }
+    }, []);
     
     const [rows, setRows] = useState(logs.filter(l => l.status == 'active'));
     const [showArchives, setShowArchives] = useState(false);

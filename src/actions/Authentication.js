@@ -1,5 +1,5 @@
 import { TYPES } from '../store/types';
-import { Axios } from '../utils';
+import Axios from "axios";
 import { showToast } from './System';
 const {
     SET_AUTHENTICATION
@@ -38,7 +38,12 @@ export const signIn = (data) => {
     delete body.history;
     return (dispatch) => {
         console.log(body);
-        Axios.post( '/oauth/token/', body)
+        // Axios.post( 'http://quinto-log-back.herokuapp.com/oatuh/token', body, {
+        //     headers: {'Content-Type': 'application/json'}
+        // })
+        Axios.get('https://quinto-log-back.herokuapp.com/v1/users', {
+            headers: { 'Access-Control-Allow-Origin': '*' }
+        })
         .then(response => {
             console.log(response)
             dispatch({
