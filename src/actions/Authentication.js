@@ -10,7 +10,9 @@ export const register = (data) => {
     delete body.history;
     console.log(body);
     return (dispatch) => {
-        Axios.post('/users', body)
+        Axios.post('https://quinto-log-back.herokuapp.com/v1/users', body, {
+            headers: {'Content-Type': 'application/json'}
+        })
         .then((response) => {
             console.log(response);
             dispatch({
@@ -38,12 +40,12 @@ export const signIn = (data) => {
     delete body.history;
     return (dispatch) => {
         console.log(body);
-        // Axios.post( 'http://quinto-log-back.herokuapp.com/oatuh/token', body, {
-        //     headers: {'Content-Type': 'application/json'}
-        // })
-        Axios.get('https://cors-anywhere.herokuapp.com/http://quinto-log-back.herokuapp.com/v1/users', {
-            headers: { 'Access-Control-Allow-Origin': '*' }
+        Axios.post( 'https://quinto-log-back.herokuapp.com/oatuh/token', body, {
+            headers: {'Content-Type': 'application/json'}
         })
+        // Axios.post('https://cors-anywhere.herokuapp.com/http://quinto-log-back.herokuapp.com/v1/users', {
+        //     headers: { 'Access-Control-Allow-Origin': '*' }
+        // })
         .then(response => {
             console.log(response)
             dispatch({
