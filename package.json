@@ -43,6 +43,6 @@
       "last 1 firefox version",
       "last 1 safari version"
     ]
-  },
-  "proxy": "http://quinto-log-back.herokuapp.com/"
+  }
+  //"proxy": "http://quinto-log-back.herokuapp.com/"
 }
