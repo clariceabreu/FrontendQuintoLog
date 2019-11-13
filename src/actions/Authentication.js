@@ -1,29 +1,34 @@
 import { TYPES } from '../store/types';
-import Axios from "axios";
+import { Axios } from "../utils";
 import { showToast } from './System';
 const {
-    SET_AUTHENTICATION
+    SET_AUTHENTICATION,
+    SET_TOKEN
 } = TYPES
 
 export const register = (data) => {
     let body = {...data};
-    delete body.history;
-    console.log(body);
+    delete body.history;    
     return (dispatch) => {
-        Axios.post('https://quinto-log-back.herokuapp.com/v1/users', body, {
-            headers: {'Content-Type': 'application/json'}
-        })
+        Axios.post('https://quinto-log-back.herokuapp.com/v1/users', body)
         .then((response) => {
-            console.log(response);
             dispatch({
                 type: SET_AUTHENTICATION,
                 payload: response.data
             })
-            signIn({
-                email: body.email,
-                password: body.password,
-                history: data.history
+            
+            Axios.post( 'https://quinto-log-back.herokuapp.com/oauth/token', body)
+            .then(response => {
+                dispatch({
+                    type: SET_TOKEN,
+                    payload: response.data.token
+                })
+
+                data.history.push('/');
             })
+            .catch((error) => {
+                throw error;
+            });
         })
         .catch(() => {
             dispatch(showToast({
@@ -36,26 +41,18 @@ export const register = (data) => {
 }
 
 export const signIn = (data) => {
+    console.log(data);
     const body = {...data};
     delete body.history;
     return (dispatch) => {
-        console.log(body);
-        Axios.post( 'https://quinto-log-back.herokuapp.com/oatuh/token', body, {
-            headers: {'Content-Type': 'application/json'}
-        })
-        // Axios.post('https://cors-anywhere.herokuapp.com/http://quinto-log-back.herokuapp.com/v1/users', {
-        //     headers: { 'Access-Control-Allow-Origin': '*' }
-        // })
+        Axios.post( 'https://quinto-log-back.herokuapp.com/oauth/token', body)
         .then(response => {
-            console.log(response)
             dispatch({
-                type: TYPES.SET_TOKEN,
-                payload: response.data
+                type: SET_TOKEN,
+                payload: response.data.token
             })
 
-            console.log("test");
-
-            Axios.get('/users?email=' + body.email)
+            Axios.put('https://quinto-log-back.herokuapp.com/v1/users/getData', { email:  body.email })
             .then(response => {
                 dispatch({
                     type: SET_AUTHENTICATION,
@@ -69,7 +66,6 @@ export const signIn = (data) => {
             });
         })
         .catch((error) => {
-            console.log(error);
             dispatch(showToast({
                 open: true,
                 message: 'Erro ao efetuar login',

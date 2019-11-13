@@ -73,8 +73,8 @@ const Register = (props) => {
                 email: email,
                 password: password,
                 name: name,
-                securityQuestion: secQuest,
-                securityAnswer: answer,
+                "security_question": secQuest.toString(),
+                "security_answer": answer,
                 history: props.history
             }));
         }

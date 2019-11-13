@@ -8,7 +8,6 @@ import Header from '../common/Header';
 import Toast from '../common/Toast';
 import { showToast } from '../../actions/System';
 import { getLogs, updateLog } from '../../actions/Logs';
-import { getUsers } from '../../actions/Users';
 import { Redirect } from 'react-router-dom'
 import u from 'underscore';
 
@@ -19,18 +18,19 @@ const Home = (props) => {
     const user = useSelector(state => state.authentication);
 
     useEffect(() => {
-        if (user.token) {
-            dispatch(getLogs());
-            dispatch(getUsers());
-        }
+        if (user.token) dispatch(getLogs());
     }, []);
     
-    const [rows, setRows] = useState(logs.filter(l => l.status == 'active'));
+    const [rows, setRows] = useState([]);
     const [showArchives, setShowArchives] = useState(false);
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [page, setPage] = useState(0);
     const [orderBy, setOrderBy] = useState(0);
     const [enviroment, setEnviroment] = useState('production');
+
+    useEffect(() => {
+        setRows(logs.filter(l => l.status == 'ACTIVE'));
+    }, [logs]);
 
     const handleCheckAll = () => {
         let update = [...rows];
@@ -93,9 +93,10 @@ const Home = (props) => {
     };
 
     function getLabel(row){
-        if (row.level === 'debug') return(<div style={{...styles.levelLabel, background: '#00ff00'}}><label>{row.level}</label></div>)
-        else if (row.level === 'warning') return(<div style={{...styles.levelLabel,  background: '#ffdd42'}}><label>{row.level}</label></div>)
-        return(<div style={{...styles.levelLabel, background: '#ff6961'}}><label style={{textAlign: 'center'}}>{row.level}</label></div>)
+        const level = row.level_log.toLowerCase();
+        if (level === 'debug') return(<div style={{...styles.levelLabel, background: '#00ff00'}}><label>{level}</label></div>)
+        else if (level === 'warning') return(<div style={{...styles.levelLabel,  background: '#ffdd42'}}><label>{level}</label></div>)
+        return(<div style={{...styles.levelLabel, background: '#ff6961'}}><label style={{textAlign: 'center'}}>{level}</label></div>)
     }
 
     function getData(){
@@ -168,7 +169,7 @@ const Home = (props) => {
                                             <TableCell key={row.id + '_1'} onClick={(e) => e.stopPropagation()}><Checkbox color="black" onClick={() => handleCheckRow(row.id)} checked={row.checked}/></TableCell>
                                             <TableCell key={row.id + '_2'} style={{fontFamily: 'Gotham'}}>{getLabel(row)}</TableCell>
                                             <TableCell key={row.id + '_3'} style={{fontFamily: 'Gotham'}}>{row.description}</TableCell>
-                                            <TableCell key={row.id + '_4'} style={{fontFamily: 'Gotham'}}>{row.numberEvents}</TableCell>
+                                            <TableCell key={row.id + '_4'} style={{fontFamily: 'Gotham'}}>{row.number_events}</TableCell>
                                         </TableRow>
                                     )
                                 })}

@@ -7,8 +7,9 @@ const {
 
 export const getLogs = () => {
     return (dispatch) => {
-        Axios.get('/v1/logs')
+        Axios.get('https://quinto-log-back.herokuapp.com/v1/logs')
         .then((response) => {
+            console.log(response.data);
             dispatch({
                 type: SET_LOGS,
                 payload: response.data

@@ -8,7 +8,7 @@ import logo from '../../assets/images/logo-quintolog.png';
 
 const Header = (props) => {
     const dispatch = useDispatch();
-    const user = useSelector(state => state.authentication);
+    const user = useSelector(state => state.authentication.userData);
 
     const [anchorEl, setAnchorEl] = useState(null);
 
