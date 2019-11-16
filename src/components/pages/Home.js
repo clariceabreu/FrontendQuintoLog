@@ -15,10 +15,10 @@ const Home = (props) => {
     const dispatch = useDispatch();
 
     const logs = useSelector(state => state.logs);
-    const user = useSelector(state => state.authentication);
+    const token = useSelector(state => state.authentication.token);
 
     useEffect(() => {
-        if (user.token) dispatch(getLogs());
+        if (token) dispatch(getLogs());
     }, []);
     
     const [rows, setRows] = useState([]);
@@ -26,10 +26,10 @@ const Home = (props) => {
     const [rowsPerPage, setRowsPerPage] = useState(10);
     const [page, setPage] = useState(0);
     const [orderBy, setOrderBy] = useState(0);
-    const [enviroment, setEnviroment] = useState('production');
+    const [environment, setEnvironment] = useState(0);
 
     useEffect(() => {
-        setRows(logs.filter(l => l.status == 'ACTIVE'));
+        setRows(logs.filter(l => l.status === 'ACTIVE'));
     }, [logs]);
 
     const handleCheckAll = () => {
@@ -79,8 +79,8 @@ const Home = (props) => {
     }
 
     const handleShowArchiveds = () => {
-        if(showArchives) setRows(logs.filter(l => l.status == 'active'));
-        else setRows(logs.filter(l => l.status == 'archived'));
+        if(showArchives) setRows(logs.filter(l => l.status === 'active'));
+        else setRows(logs.filter(l => l.status === 'archived'));
         setShowArchives(!showArchives);
     }
 
@@ -100,23 +100,26 @@ const Home = (props) => {
     }
 
     function getData(){
-        if (orderBy == 'frequency') return u.sortBy(rows, 'numberEvents').reverse();
-        else return rows;
+        console.log(environment);
+        if (orderBy === 'frequency') return u.sortBy(rows, 'numberEvents').reverse();
+        else if (orderBy === 'level') return u.sortBy(rows, 'log_level');
+        return rows.filter(r => environment !== 0 && environment !== 'ALL' ? r.environment == environment : true);
     }
 
     return (
         <>            
-            {user.token ?
+            {token ?
             <div style={styles.container}>
                 <Header {...props} />
                 <div style={styles.content}>
                     <div style={styles.filter}>
                         <div style={{display: 'flex'}}>
-                            <Select variant="outlined" value={enviroment} style={styles.select} onChange={(e) => setEnviroment(e.target.value)}>
+                            <Select variant="outlined" value={environment} style={styles.select} onChange={(e) => setEnvironment(e.target.value)}>
                                 <MenuItem value={0} disabled style={{fontFamily: 'Gotham'}}>Ambiente</MenuItem>
-                                <MenuItem value='production' style={{fontFamily: 'Gotham'}}>Produção</MenuItem>
-                                <MenuItem value='homologation' style={{fontFamily: 'Gotham'}}>Homologação</MenuItem>
-                                <MenuItem value='dev' style={{fontFamily: 'Gotham'}}>Dev</MenuItem>
+                                <MenuItem value='ALL' style={{fontFamily: 'Gotham'}}>Todos</MenuItem>
+                                <MenuItem value='PRODUCTION' style={{fontFamily: 'Gotham'}}>Produção</MenuItem>
+                                <MenuItem value='HOMOLOG' style={{fontFamily: 'Gotham'}}>Homologação</MenuItem>
+                                <MenuItem value='DEV' style={{fontFamily: 'Gotham'}}>Dev</MenuItem>
                             </Select>
                             <Select variant="outlined" style={styles.select} value={orderBy} onChange={(e) => setOrderBy(e.target.value)}>
                                 <MenuItem value={0} disabled style={{fontFamily: 'Gotham'}}>Ordenar por</MenuItem>

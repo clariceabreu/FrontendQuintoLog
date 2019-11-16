@@ -1,8 +1,11 @@
 import { TYPES } from '../store/types';
 import { Axios } from "../utils";
 import { showToast } from './System';
+import { clearLogs } from './Logs';
+import { clearSystem } from './System'; 
 const {
-    SET_AUTHENTICATION,
+    CLEAR,
+    SET_USER_DATA,
     SET_TOKEN
 } = TYPES
 
@@ -13,11 +16,20 @@ export const register = (data) => {
         Axios.post('https://quinto-log-back.herokuapp.com/v1/users', body)
         .then((response) => {
             dispatch({
-                type: SET_AUTHENTICATION,
-                payload: response.data
+                type: SET_USER_DATA,
+                payload: {
+                    id: response.data.id,
+                    name: response.data.name,
+                    email: response.data.email,
+                    security_question: response.data.security_question,
+                    security_answer: response.data.security_answer
+                }
             })
             
-            Axios.post( 'https://quinto-log-back.herokuapp.com/oauth/token', body)
+            Axios.post( 'https://quinto-log-back.herokuapp.com/oauth/token', {
+                email: body.email,
+                password: body.password
+            })
             .then(response => {
                 dispatch({
                     type: SET_TOKEN,
@@ -41,7 +53,6 @@ export const register = (data) => {
 }
 
 export const signIn = (data) => {
-    console.log(data);
     const body = {...data};
     delete body.history;
     return (dispatch) => {
@@ -55,8 +66,14 @@ export const signIn = (data) => {
             Axios.put('https://quinto-log-back.herokuapp.com/v1/users/getData', { email:  body.email })
             .then(response => {
                 dispatch({
-                    type: SET_AUTHENTICATION,
-                    payload: response.data
+                    type: SET_USER_DATA,
+                    payload: {
+                        id: response.data.id,
+                        name: response.data.name,
+                        email: response.data.email,
+                        security_question: response.data.security_question,
+                        security_answer: response.data.security_answer
+                    }
                 })
 
                 data.history.push('/');
@@ -66,11 +83,18 @@ export const signIn = (data) => {
             });
         })
         .catch((error) => {
-            dispatch(showToast({
-                open: true,
-                message: 'Erro ao efetuar login',
-                type: 'error'
-            }));
+            if (error.response && error.response.status && error.response.status === 403)
+                dispatch(showToast({
+                    open: true,
+                    message: 'Usuário ou senha inválidos',
+                    type: 'error'
+                }));
+            else 
+                dispatch(showToast({
+                    open: true,
+                    message: 'Erro ao efetuar login',
+                    type: 'error'
+                }));
         });        
     }
 }
@@ -78,23 +102,42 @@ export const signIn = (data) => {
 export const signOut = () => {
     return (dispatch) => {
         dispatch({
-            type: SET_AUTHENTICATION,
-            payload: {}
+            type: CLEAR,
         })
+        dispatch(clearLogs({
+            type: CLEAR,
+        }))
+    dispatch(clearSystem({
+            type: CLEAR,
+        }))
+
     }
 }
 
 export const updateUser = (body) => {
+    console.log(body);
     return (dispatch) => {
-        Axios.put('/users' , body)
+        Axios.put('https://quinto-log-back.herokuapp.com/v1/users/' + body.id , body)
         .then((response) => {
+            dispatch({
+                type: SET_USER_DATA,
+                payload: {
+                    id: response.data.id,
+                    name: response.data.name,
+                    email: response.data.email,
+                    security_question: response.data.security_question,
+                    security_answer: response.data.security_answer
+                }
+            })
+
             dispatch(showToast({
                 open: true,
                 message: 'Dados atualizados com sucesso',
                 type: 'success'
             }));
         })
-        .catch(() => {
+        .catch((error) => {
+            console.log(error);
             dispatch(showToast({
                 open: true,
                 message: 'Erro ao atualizados dados',
@@ -106,7 +149,7 @@ export const updateUser = (body) => {
 
 export const changePassword = (body) => {
     return (dispatch) => {
-        Axios.put('/changePassword' , body)
+        Axios.put('https://quinto-log-back.herokuapp.com/v1/users/changePassword/' + body.id, body)
         .then((response) => {
             dispatch(showToast({
                 open: true,
@@ -114,19 +157,27 @@ export const changePassword = (body) => {
                 type: 'success'
             }));
         })
-        .catch(() => {
-            dispatch(showToast({
-                open: true,
-                message: 'Erro ao alterar senha',
-                type: 'error'
-            }));
+        .catch((error) => {
+            console.log(error);
+            if (error.response && error.response.status && error.response.status === 401)
+                dispatch(showToast({
+                    open: true,
+                    message: 'Senha anterior incorreta',
+                    type: 'error'
+                }));
+            else 
+                dispatch(showToast({
+                    open: true,
+                    message: 'Erro ao alterar senha',
+                    type: 'error'
+                }));
         });
     }
 }
 
 export const recoverPassword = (body) => {
     return (dispatch) => {
-        Axios.put('/recoverPassword' , body)
+        Axios.put('https://quinto-log-back.herokuapp.com/v1/users/recoverPassword' , body)
         .then((response) => {
             dispatch(showToast({
                 open: true,

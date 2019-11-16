@@ -6,6 +6,8 @@ import LogInfo from "./components/pages/LogInfo";
 import Profile from "./components/pages/Profile";
 import ForgotPassword from './components/pages/ForgotPassword';
 import { Provider } from 'react-redux';
+import { persistor } from './store/index';
+import { PersistGate } from 'redux-persist/integration/react';
 import {
     Router,
     Route,
@@ -20,14 +22,16 @@ const App = () => {
     return (
         <Provider store={store}>
             <Router history={history}>
-                <Switch>
-                    <Route path="/login" exact={true} component={Login}/>
-                    <Route path="/" exact={true} component={Home}/>
-                    <Route path="/cadastro" exact={true} component={Register}/>
-                    <Route path="/logInfo/:id" exact={true} render={(props) => <LogInfo {...props}/>}/>
-                    <Route path="/perfil" exact={true} component={Profile}/>
-                    <Route path="/recuperarSenha" exact={true} component={ForgotPassword}/>
-                </Switch>
+                <PersistGate loading={null} persistor={persistor}>
+                    <Switch>
+                        <Route path="/login" exact={true} component={Login}/>
+                        <Route path="/" exact={true} component={Home}/>
+                        <Route path="/cadastro" exact={true} component={Register}/>
+                        <Route path="/logInfo/:id" exact={true} render={(props) => <LogInfo {...props}/>}/>
+                        <Route path="/perfil" exact={true} component={Profile}/>
+                        <Route path="/recuperarSenha" exact={true} component={ForgotPassword}/>
+                    </Switch>
+                </PersistGate>
             </Router>
         </Provider>
     )

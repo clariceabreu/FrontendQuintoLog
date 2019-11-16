@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
-import { useDispatch } from 'react-redux';
+import React, { useState, useEffect } from 'react';
+import { useDispatch, useSelector } from 'react-redux';
 import '../../assets/general/main.min.css';
-import { Button, TextField, Select, MenuItem } from '@material-ui/core';
+import { Button, TextField, Select, MenuItem, CircularProgress } from '@material-ui/core';
 import logo from '../../assets/images/logo-quintolog.png';
 import Toast from '../common/Toast';
 import { register } from '../../actions/Authentication';
@@ -10,12 +10,19 @@ import { showToast } from '../../actions/System';
 
 const Register = (props) => {
     const dispatch = useDispatch();
+    const loadingUrls = useSelector(state => state.system.loadingUrls);
     
     const [name, setName] = useState(null);
     const [email, setEmail] = useState(null);
     const [password, setPassword] = useState(null);
-    const [secQuest, setSecQuest] = useState(0);
+    const [secQuest, setSecQuest] = useState(-1);
     const [answer, setAnswer] = useState(null);
+    const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        if (loadingUrls.includes('users') || loadingUrls.includes('token') || loadingUrls.includes('getData')) setLoading(true);
+        else setLoading(false);
+    }, [loadingUrls]);
     
     const handleRegister = () => {
         if (!name) {
@@ -56,7 +63,7 @@ const Register = (props) => {
                 message: 'A senha deve conter uma letra e um número',
                 type: 'error'
             }));
-        } else if (!secQuest){
+        } else if (secQuest == -1){
             dispatch(showToast({
                 open: true,
                 message: 'Escolha uma pergunta de segurança',
@@ -82,7 +89,7 @@ const Register = (props) => {
 
     return (
         <div style={styles.container}>
-            <img src={logo} height={180} width={300} style={{margin: '50px auto 0'}}/>
+            <img src={logo} height={180} width={300} style={{margin: '50px auto 0'}} alt="logo"/>
             <div style={styles.content}>
                 <h1 style={styles.title}>Cadastro</h1>
                 <div style={styles.form}>
@@ -99,11 +106,11 @@ const Register = (props) => {
                                type="password"
                                style={styles.input}
                                onChange={(e) => setPassword(e.target.value)}/>
-                    <Select variant="outlined" value={secQuest} style={{...styles.select, color: secQuest == 0  ? '#6c6c6c' : '#1e1e1e'}} onChange={(e) => setSecQuest(e.target.value)}>
-                        <MenuItem value={0} disabled style={{fontFamily: 'Gotham'}}>Pergunta de segurança</MenuItem>
-                        <MenuItem value={1} style={{fontFamily: 'Gotham'}}>Qual era o nome de seu professor favorito na escola primária? </MenuItem>
-                        <MenuItem value={2} style={{fontFamily: 'Gotham'}}>Qual era o nome do seu primeiro animal de estimacão?</MenuItem>
-                        <MenuItem value={3} style={{fontFamily: 'Gotham'}}>Qual foi o primeiro filme que você viu no cinema?</MenuItem>
+                    <Select variant="outlined" value={secQuest} style={{...styles.select, color: secQuest === -1  ? '#6c6c6c' : '#1e1e1e'}} onChange={(e) => setSecQuest(e.target.value)}>
+                        <MenuItem value={-1} disabled style={{fontFamily: 'Gotham'}}>Pergunta de segurança</MenuItem>
+                        <MenuItem value={0} style={{fontFamily: 'Gotham'}}>Qual era o nome de seu professor favorito na escola primária? </MenuItem>
+                        <MenuItem value={1} style={{fontFamily: 'Gotham'}}>Qual era o nome do seu primeiro animal de estimacão?</MenuItem>
+                        <MenuItem value={2} style={{fontFamily: 'Gotham'}}>Qual foi o primeiro filme que você viu no cinema?</MenuItem>
                     </Select>
                     <TextField label="Resposta"
                                variant="outlined"
@@ -112,7 +119,7 @@ const Register = (props) => {
                     <Button variant="outlined" 
                             style={styles.button}
                             onClick={handleRegister}>
-                        Cadastrar
+                        {loading ? <CircularProgress size={24} style={{color: 'white'}} /> : 'CADASTRAR'}
                     </Button>
                     <label style={styles.backButton} onClick={() => props.history.push('/login')}>Voltar</label>
                     <Toast/>

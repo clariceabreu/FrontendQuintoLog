@@ -26,10 +26,10 @@ const Toast = () => {
             onClose={closeToast}>
                     <SnackbarContent
                         aria-describedby="client-snackbar"
-                        style={{backgroundColor: toast.type == 'error' ? '#d32f2f' : '#43a047'}}
+                        style={{backgroundColor: toast.type === 'error' ? '#d32f2f' : '#43a047'}}
                         message={
                             <div id="client-snackbar" style={{display: 'flex'}}>
-                                {toast.type == 'error' ? <Error style={{marginRight: 5}}/> : <CheckCircle style={{marginRight: 5}}/>}
+                                {toast.type === 'error' ? <Error style={{marginRight: 5}}/> : <CheckCircle style={{marginRight: 5}}/>}
                                 <span style={{marginTop: 3}}>{toast.message}</span>
                             </div>
                         }

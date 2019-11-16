@@ -55,7 +55,7 @@ const ForgotPassword = (props) => {
 
     return (
         <div style={styles.container}>
-            <img src={logo} height={180} width={300} style={{margin: '50px auto 0'}}/>
+            <img src={logo} height={180} width={300} style={{margin: '50px auto 0'}}  alt="logo"/>
             <div style={styles.content}>
                 <h1 style={styles.title}>Recuperar Senha</h1>
                 <div style={styles.form}>
@@ -69,7 +69,7 @@ const ForgotPassword = (props) => {
                                 style={styles.input}
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}/>
-                    <Select variant="outlined" value={secQuest} style={{...styles.select, color: secQuest == 0  ? '#6c6c6c' : '#1e1e1e'}} onChange={(e) => setSecQuest(e.target.value)}>
+                    <Select variant="outlined" value={secQuest} style={{...styles.select, color: secQuest === 0  ? '#6c6c6c' : '#1e1e1e'}} onChange={(e) => setSecQuest(e.target.value)}>
                         <MenuItem value={0} disabled style={{fontFamily: 'Gotham'}}>Pergunta de segurança</MenuItem>
                         <MenuItem value={1} style={{fontFamily: 'Gotham'}}>Qual era o nome de seu professor favorito na escola primária?</MenuItem>
                         <MenuItem value={2} style={{fontFamily: 'Gotham'}}>Qual era o nome do seu primeiro animal de estimacão?</MenuItem>

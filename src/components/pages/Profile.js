@@ -1,82 +1,124 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useDispatch, useSelector } from 'react-redux';
 import '../../assets/general/main.min.css';
-import { Button, TextField, Snackbar, IconButton, SnackbarContent, Select, MenuItem } from '@material-ui/core';
+import { Button, TextField, Select, MenuItem, CircularProgress } from '@material-ui/core';
 import logo from '../../assets/images/logo-quintolog.png';
 import { updateUser, changePassword } from '../../actions/Authentication';
-import { Close, Error } from '@material-ui/icons';
+import { showToast } from '../../actions/System';
+import { Redirect } from 'react-router-dom';
+import Toast from '../common/Toast';
+import { ChevronLeft } from '@material-ui/icons';
 
 const Profile = (props) => {
     const dispatch = useDispatch();
 
-    const user = useSelector(state => state.authentication);
+    const user = useSelector(state => state.authentication.userData);
+    const token = useSelector(state => state.authentication.token);
+    const loadingUrls = useSelector(state => state.system.loadingUrls);
     
     const [name, setName] = useState(user.name || '');
     const [email, setEmail] = useState(user.email || '');
     const [password, setPassword] = useState('');
     const [newPassword, setNewPassword] = useState('');
-    const [toastOpen, setToastOpen] = useState(false);
-    const [toastMessage, setToastMessage] = useState('');
-    const [secQuest, setSecQuest] = useState(user.secQuest ?  user.secQuest : 0);
-    const [answer, setAnswer] = useState(user.secQuestAnswer ?  user.secQuestAnswer : 0);
-    const [changePassword, setChangePassword] = useState(false);
+    const [secQuest, setSecQuest] = useState(getQuestion(user.security_question));
+    const [answer, setAnswer] = useState(user.security_answer ?  user.security_answer : '');
+    const [alterPassword, setAlterPassword] = useState(false);
+    const [loading, setLoading] = useState(false)
+
+    useEffect(() => {
+        if (loadingUrls.includes('users') || loadingUrls.includes('changePassword')) setLoading(true);
+        else setLoading(false);
+    }, [loadingUrls]);
+
+    function getQuestion(question){        
+        if(question === "TEACHER") return 0;
+        if(question === "ANIMAL") return 1;
+        if(question === "FILM") return 2;
+        return -1;
+    }
     
     const handleEdit = () => {
         if (!name) {
-            setToastMessage('Insira o nome');
-            setToastOpen(true);
+            dispatch(showToast({
+                open: true,
+                message: 'Insira o nome',
+                type: 'error'
+            }));
         }
         else if (!email) {
-            setToastMessage('Insira o e-mail');
-            setToastOpen(true);
-        } else if (!secQuest){
-            setToastMessage('Escolha uma pergunta de segurança');
-            setToastOpen(true);
+            dispatch(showToast({
+                open: true,
+                message: 'Insira o e-mail',
+                type: 'error'
+            }));
+        } else if (secQuest == -1){
+            dispatch(showToast({
+                open: true,
+                message: 'Escolha uma pergunta de segurança',
+                type: 'error'
+            }));
         } else if (!answer){
-            setToastMessage('Insira a resposta para a pergunta de segurança');
-            setToastOpen(true);
+            dispatch(showToast({
+                open: true,
+                message: 'Insira a resposta para a pergunta de segurança',
+                type: 'error'
+            }));
         } else {
             dispatch(updateUser({
+                id: user.id,
                 email: email,
                 name: name, 
-                securityQuestion: secQuest,
-                securityAnswer: answer
+                security_question: secQuest,
+                security_answer: answer
             }));
         }
     }
 
     const handleChangePassword = () => {
         if (!password) {
-            setToastMessage('Insira a senha');
-            setToastOpen(true);
-        } else if (!newPassword){
-            setToastMessage('Insira a nova senha');
-            setToastOpen(true);
-        } else if (password.length < 8){
-            setToastMessage('A senha deve conter no mínimo 8 caracteres');
-            setToastOpen(true);
-        } else if (!password.match(new RegExp(/[0-9]/, 'g'))) {
-            setToastMessage('A senha deve conter uma letra e um número2');
-            setToastOpen(true);
-        } else if (!password.match(new RegExp(/[A-Z]/, 'gi'))){
-            setToastMessage('A senha deve conter uma letra e um número');
-            setToastOpen(true);
+            dispatch(showToast({
+                open: true,
+                message: 'Insira a senha anterior',
+                type: 'error'
+            }));
+        }else if (!newPassword) {
+            dispatch(showToast({
+                open: true,
+                message: 'Insira a nova senha',
+                type: 'error'
+            }));
+        } else if (newPassword.length < 8){
+            dispatch(showToast({
+                open: true,
+                message: 'A senha deve conter no mínimo 8 caracteres',
+                type: 'error'
+            }));
+        } else if (!newPassword.match(new RegExp(/[0-9]/, 'g'))) {
+            dispatch(showToast({
+                open: true,
+                message: 'A senha deve conter uma letra e um número',
+                type: 'error'
+            }));
+        } else if (!newPassword.match(new RegExp(/[A-Z]/, 'gi'))){
+            dispatch(showToast({
+                open: true,
+                message: 'A senha deve conter uma letra e um número',
+                type: 'error'
+            }));
         } else {
             dispatch(changePassword({
-                email: email,
-                password: password,
+                id: user.id,
+                oldPassword: password,
                 newPassword: newPassword,
             }));
         }
     }
 
-    const closeToast = () => setToastOpen(false);
-
     function renderFields(){
-        if (changePassword){
+        if (alterPassword){
             return(
                 <>
-                    <TextField  label="Senha"
+                    <TextField  label="Senha Anterior"
                                 variant="outlined"
                                 type="password"
                                 style={styles.input}
@@ -103,11 +145,11 @@ const Profile = (props) => {
                                 style={styles.input}
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}/>
-                        <Select variant="outlined" value={secQuest} style={{...styles.select, color: secQuest == 0  ? '#6c6c6c' : '#1e1e1e'}} onChange={(e) => setSecQuest(e.target.value)}>
-                            <MenuItem value={0} disabled style={{fontFamily: 'Gotham'}}>Pergunta de segurança</MenuItem>
-                            <MenuItem value={1} style={{fontFamily: 'Gotham'}}>Qual era o nome de seu professor favorito na escola primária?</MenuItem>
-                            <MenuItem value={2} style={{fontFamily: 'Gotham'}}>Qual era o nome do seu primeiro animal de estimacão?</MenuItem>
-                            <MenuItem value={3} style={{fontFamily: 'Gotham'}}>Qual foi o primeiro filme que você viu no cinema?</MenuItem>
+                        <Select variant="outlined" value={secQuest} style={{...styles.select, color: secQuest === -1  ? '#6c6c6c' : '#1e1e1e'}} onChange={(e) => setSecQuest(e.target.value)}>
+                            <MenuItem value={-1} disabled style={{fontFamily: 'Gotham'}}>Pergunta de segurança</MenuItem>
+                            <MenuItem value={0} style={{fontFamily: 'Gotham'}}>Qual era o nome de seu professor favorito na escola primária?</MenuItem>
+                            <MenuItem value={1} style={{fontFamily: 'Gotham'}}>Qual era o nome do seu primeiro animal de estimacão?</MenuItem>
+                            <MenuItem value={2} style={{fontFamily: 'Gotham'}}>Qual foi o primeiro filme que você viu no cinema?</MenuItem>
                         </Select>
                         <TextField label="Resposta"
                                     variant="outlined"
@@ -120,53 +162,44 @@ const Profile = (props) => {
     }
 
     return (
+        <>
+        {token ?
         <div style={styles.container}>
-            <img src={logo} height={180} width={300} style={{margin: '50px auto 0'}}/>
+            <img src={logo} height={180} width={300} style={{margin: '50px auto'}}  alt="logo"/>
+            <div style={styles.back} onClick={() => props.history.push({pathname: '/'})}>
+                <ChevronLeft style={{ fontSize: 40}} />
+                <p style={styles.backText}>Voltar</p>
+            </div>
             <div style={styles.content}>
                 <h1 style={styles.title}>Perfil</h1>
                 <div style={styles.form}>
                     {renderFields()}
                     <Button variant="outlined" 
                             style={styles.button}
-                            onClick={() => changePassword ? handleChangePassword() : handleEdit()}>
-                            Editar
+                            onClick={() => alterPassword ? handleChangePassword() : handleEdit()}>
+                            {loading ? <CircularProgress size={24} style={{color: 'white'}} /> : 'EDITAR'}
                     </Button>
-                    <label style={styles.changePassword} onClick={() => setChangePassword(!changePassword)}>{changePassword ? 'Alterar dados' : 'Alterar senha'}</label>
-                    <Snackbar
-                        anchorOrigin={{
-                            vertical: 'top',
-                            horizontal: 'right',
-                        }}
-                        open={toastOpen}
-                        autoHideDuration={6000}
-                        onClose={closeToast}>
-                             <SnackbarContent
-                                aria-describedby="client-snackbar"
-                                style={{backgroundColor: '#d32f2f'}}
-                                message={
-                                    <div id="client-snackbar" style={{display: 'flex'}}>
-                                        <Error style={{marginRight: 5}}/>
-                                        <span style={{marginTop: 3}}>{toastMessage}</span>
-                                    </div>
-                                }
-                                action={[
-                                    <IconButton
-                                        key="close"
-                                        aria-label="Close"
-                                        color="inherit"
-                                        onClick={closeToast}>
-                                        <Close />
-                                    </IconButton>
-                                ]}
-                            />
-                    </Snackbar>
+                    <label style={styles.changePassword} onClick={() => setAlterPassword(!alterPassword)}>{alterPassword ? 'Alterar dados' : 'Alterar senha'}</label>
                 </div>
             </div>
-        </div>
+            <Toast/>
+        </div> :  <Redirect to='/login'/>} 
+        </>
     )
 }
 
 const styles = {
+    back: {
+        margin: '20px auto 0',
+        display: 'flex',
+        cursor: 'pointer',
+        width: 475
+    },
+    backText: {
+        fontSize: 18,
+        fontFamily: 'Gotham',
+        marginTop: 12
+    },
     container: {
         display: 'flex', 
         justifyContent: 'center', 
@@ -177,7 +210,7 @@ const styles = {
         borderRadius: 5,
         padding: '40px 30px 60px',
         width: 'fit-content',
-        margin: '70px auto'
+        margin: '5px auto'
     },
     form: {
         display: 'flex', 

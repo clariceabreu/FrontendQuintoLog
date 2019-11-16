@@ -1,28 +1,52 @@
 import React, { useState, useEffect } from 'react';
 import '../../assets/general/main.min.css';
-import { useDispatch } from 'react-redux';
-import { Button, TextField } from '@material-ui/core';
+import { useSelector, useDispatch } from 'react-redux';
+import { Button, TextField, CircularProgress } from '@material-ui/core';
 import logo from '../../assets/images/logo-quintolog.png';
 import { signIn } from '../../actions/Authentication';
+import { showToast } from '../../actions/System';
 import Toast from '../common/Toast';
 
 const Login = (props) => {
     const dispatch = useDispatch();
+
+    const loadingUrls = useSelector(state => state.system.loadingUrls);
     
     const [email, setEmail] = useState(null);
     const [password, setPassword] = useState(null);
+    const [loading, setLoading] = useState(false);
     
     const handleSignIn = () => {
-        dispatch(signIn({
-            email: email,
-            password: password,
-            history: props.history
-        }));
+        if (!email) {
+            dispatch(showToast({
+                open: true,
+                message: 'Insira o e-mail',
+                type: 'error'
+            }));
+        }
+        else if (!password) {
+            dispatch(showToast({
+                open: true,
+                message: 'Insira o senha',
+                type: 'error'
+            }));
+        }
+        else 
+            dispatch(signIn({
+                email: email,
+                password: password,
+                history: props.history
+            }));
     }
+
+    useEffect(() => {
+        if (loadingUrls.includes('token') || loadingUrls.includes('getData')) setLoading(true);
+        else setLoading(false);
+    }, [loadingUrls]);
 
     return (
         <div style={styles.container}>
-            <img src={logo} height={180} width={300} style={{margin: '50px auto 0'}}/>
+            <img src={logo} height={180} width={300} style={{margin: '50px auto 0'}}  alt="logo"/>
             <div style={styles.content}>
                 <h1 style={styles.title}>Login</h1>
                 <div style={styles.form}>
@@ -37,8 +61,9 @@ const Login = (props) => {
                                onChange={(e) => setPassword(e.target.value)}/>
                     <Button variant="outlined" 
                             style={styles.button}
-                            onClick={handleSignIn}>
-                        ENTRAR
+                            onClick={handleSignIn}
+                            loading={loading}>
+                        {loading ? <CircularProgress size={24} style={{color: 'white'}} /> : 'ENTRAR'}
                     </Button>
                     <label style={styles.forgotPassword} onClick={() => props.history.push('/recuperarSenha')}>Esqueci a senha</label>
                     <div style={styles.regiterDiv}>

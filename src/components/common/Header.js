@@ -9,13 +9,14 @@ import logo from '../../assets/images/logo-quintolog.png';
 const Header = (props) => {
     const dispatch = useDispatch();
     const user = useSelector(state => state.authentication.userData);
+    const token = useSelector(state => state.authentication.token);
 
     const [anchorEl, setAnchorEl] = useState(null);
 
     return(
         <div style={styles.header}>
             <div style={{display: 'flex'}}>
-                <img src={logo} height={70} width={110} style={{margin: '20px 40px'}}/>
+                <img src={logo} height={70} width={110} style={{margin: '20px 40px'}} alt="logo"/>
                 <div style={{marginTop: 27}}>
                     <label style={styles.title}>Bem vind@ {user.name ? user.name : 'Usuário'}</label><br/>
                     {/* <label style={styles.subTitle}>Seu token é {user.token}</label> */}
@@ -35,11 +36,11 @@ const Header = (props) => {
                     vertical: 'top',
                     horizontal: 'center',
                 }}
-                style={{height: 200}}>
+                style={{height: 500}}>
                     <div style={styles.popoverContainer}>
                         <div>
-                            <span style={styles.popOverLabels}>{user.name ? user.name : 'Usuário'}</span><br/>
-                            <span style={styles.popOverLabels}>Token: {user.token}</span>
+                            <p style={styles.popOverLabels}>{user.name ? user.name : 'Usuário'}</p>
+                            <p style={styles.popOverLabels}>Token: {token}</p>
                         </div>
                         <div style={styles.popoverButtons}>
                             <Button style={styles.buttonProfile} onClick={() => props.history.push('/perfil')}>MEU PERFIL</Button>
@@ -69,16 +70,17 @@ const styles = {
         fontSize: 18,
     },
     popoverContainer: {
-        width: 250, 
+        width: 300, 
         padding: '15px 30px'
     },
     popOverLabels: {
-        fontFamily: 'Gotham'
+        fontFamily: 'Gotham',
+        wordBreak: 'break-all'
     },
     popoverButtons: {
         display: 'flex', 
         justifyContent: 'center', 
-        marginTop: 30
+        marginTop: 20
     },
     buttonProfile: {
         fontFamily: 'Gotham', 

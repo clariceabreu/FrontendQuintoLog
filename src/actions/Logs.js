@@ -3,13 +3,13 @@ import { Axios } from '../utils';
 import { showToast } from './System';
 const {
     SET_LOGS,
+    CLEAR
 } = TYPES
 
 export const getLogs = () => {
     return (dispatch) => {
         Axios.get('https://quinto-log-back.herokuapp.com/v1/logs')
         .then((response) => {
-            console.log(response.data);
             dispatch({
                 type: SET_LOGS,
                 payload: response.data
@@ -33,9 +33,9 @@ export const updateLog = (body) => {
         Axios.put('/v1/logs', body)
         .then((response) => {
             let result = [...logs];
-            if (body.status == 'deleted') result = logs.filter(l => l.id != response.data)
+            if (body.status === 'deleted') result = logs.filter(l => l.id != response.data)
             else {
-                const index = logs.findIndex(l => l.id == body.id);
+                const index = logs.findIndex(l => l.id === body.id);
                 result[index].status = body.status;
             }
             
@@ -49,8 +49,8 @@ export const updateLog = (body) => {
             dispatch(showToast({
                 open: true,
                 message: 
-                    body.status == 'deleted' ? 'Erro ao apagar dado(s)' : 
-                    body.status == 'archived' ? 'Erro ao arquivar dado(s)' : 
+                    body.status === 'deleted' ? 'Erro ao apagar dado(s)' : 
+                    body.status === 'archived' ? 'Erro ao arquivar dado(s)' : 
                         'Erro ao desarquivar dado(s)',
                 type: 'error'
             }));
@@ -58,13 +58,22 @@ export const updateLog = (body) => {
     }
 }
 
+export const clearLogs = () => {
+    return (dispatch) => {
+        dispatch({
+            type: CLEAR
+        })
+    }
+}
+
+
 // export const archiveLog = (body) => {
 //     return (dispatch, getState) => {
 //         const { logs } = getState();
         
 //         Axios.post( 'PATH' , body)
 //         .then((response) => {
-//             let log = logs.find(l => l.id == response.data.id);
+//             let log = logs.find(l => l.id === response.data.id);
 //             log = response.data;
 
 
