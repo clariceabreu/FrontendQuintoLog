@@ -51,7 +51,7 @@ const Profile = (props) => {
                 message: 'Insira o e-mail',
                 type: 'error'
             }));
-        } else if (secQuest == -1){
+        } else if (secQuest === -1){
             dispatch(showToast({
                 open: true,
                 message: 'Escolha uma pergunta de segurança',

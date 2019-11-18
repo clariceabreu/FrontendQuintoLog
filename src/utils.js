@@ -1,5 +1,4 @@
 import axios from "axios";
-import { useSelector } from 'react-redux';
 import 'moment/locale/pt-br';
 import { store } from './store';
 import { startLoading, stopLoading, showToast } from "./actions/System";
@@ -12,12 +11,8 @@ Axios.interceptors.request.use((config) => {
     if (authentication.token) config.headers['Authorization'] = 'Bearer ' + authentication.token;
     config.headers['Content-Type'] = 'application/json';
 
-    console.log('in');
-
     const splitUrl = config.url.split('/');
     const url = config.method === 'put' ? splitUrl[splitUrl.length -2 ] : splitUrl.pop();
-
-    console.log('in2');
     store.dispatch(startLoading(url));
 
     return config;

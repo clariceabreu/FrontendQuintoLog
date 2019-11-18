@@ -5,11 +5,9 @@ const {  SET_LOGS, CLEAR } = TYPES;
 export default (state = INITIAL_STATE.logs, action) => {
     switch(action.type) {
         case SET_LOGS:
-            return action.payload;
-            break;
+            return action.payload;            
         case CLEAR:
             return [];
-            break;
         default:
             return state;
     }

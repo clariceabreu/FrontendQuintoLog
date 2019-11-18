@@ -19,7 +19,6 @@ const Header = (props) => {
                 <img src={logo} height={70} width={110} style={{margin: '20px 40px'}} alt="logo"/>
                 <div style={{marginTop: 27}}>
                     <label style={styles.title}>Bem vind@ {user.name ? user.name : 'Usuário'}</label><br/>
-                    {/* <label style={styles.subTitle}>Seu token é {user.token}</label> */}
                 </div>
             </div>
             <AccountCircle style={{fontSize: 60, margin: '27px 40px', cursor: 'pointer'}} aria-describedby={'account'} onClick={(e) => setAnchorEl(e.currentTarget)}/>

@@ -15,14 +15,15 @@ export const register = (data) => {
     return (dispatch) => {
         Axios.post('https://quinto-log-back.herokuapp.com/v1/users', body)
         .then((response) => {
+            const quest = body.security_question === "0" ? "TEACHER" : body.security_question === "1" ? "ANIMAL" :  "FILM";
             dispatch({
                 type: SET_USER_DATA,
                 payload: {
-                    id: response.data.id,
-                    name: response.data.name,
-                    email: response.data.email,
-                    security_question: response.data.security_question,
-                    security_answer: response.data.security_answer
+                    id: response.headers.location.split('/').pop(),
+                    name: body.name,
+                    email: body.email,
+                    security_question: quest,
+                    security_answer: body.security_answer
                 }
             })
             
@@ -42,12 +43,19 @@ export const register = (data) => {
                 throw error;
             });
         })
-        .catch(() => {
-            dispatch(showToast({
-                open: true,
-                message: 'Erro ao realizar cadastro',
-                type: 'error'
-            }));
+        .catch((error) => {
+            if (error.response && error.response.status && error.response.status === 500)
+                dispatch(showToast({
+                    open: true,
+                    message: 'Já existe uma conta vinculada a este email',
+                    type: 'error'
+                }));
+            else 
+                dispatch(showToast({
+                    open: true,
+                    message: 'Erro ao realizar cadastro',
+                    type: 'error'
+                }));
         });
     }
 }
@@ -104,18 +112,12 @@ export const signOut = () => {
         dispatch({
             type: CLEAR,
         })
-        dispatch(clearLogs({
-            type: CLEAR,
-        }))
-    dispatch(clearSystem({
-            type: CLEAR,
-        }))
-
+        dispatch(clearLogs());
+        dispatch(clearSystem());
     }
 }
 
 export const updateUser = (body) => {
-    console.log(body);
     return (dispatch) => {
         Axios.put('https://quinto-log-back.herokuapp.com/v1/users/' + body.id , body)
         .then((response) => {
@@ -150,7 +152,7 @@ export const updateUser = (body) => {
 export const changePassword = (body) => {
     return (dispatch) => {
         Axios.put('https://quinto-log-back.herokuapp.com/v1/users/changePassword/' + body.id, body)
-        .then((response) => {
+        .then(() => {
             dispatch(showToast({
                 open: true,
                 message: 'Senha atualizada com sucesso',
@@ -178,19 +180,27 @@ export const changePassword = (body) => {
 export const recoverPassword = (body) => {
     return (dispatch) => {
         Axios.put('https://quinto-log-back.herokuapp.com/v1/users/recoverPassword' , body)
-        .then((response) => {
+        .then(() => {
             dispatch(showToast({
                 open: true,
-                message: 'Senha alterar com sucesso',
+                message: 'Senha alterada com sucesso, faça login para entrar no sistema',
                 type: 'success'
             }));
         })
-        .catch(() => {
-            dispatch(showToast({
-                open: true,
-                message: 'Erro ao alterar senha',
-                type: 'error'
-            }));
+        .catch((error) => {
+            console.log(error);
+            if (error.response && error.response.status && (error.response.status === 401 || error.response.status === 404))
+                dispatch(showToast({
+                    open: true,
+                    message: 'Dados inválidos',
+                    type: 'error'
+                }));
+            else 
+                dispatch(showToast({
+                    open: true,
+                    message: 'Erro ao alterar senha',
+                    type: 'error'
+                }));
         });
     }
 }

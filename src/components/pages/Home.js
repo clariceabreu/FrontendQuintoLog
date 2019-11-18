@@ -27,9 +27,10 @@ const Home = (props) => {
     const [page, setPage] = useState(0);
     const [orderBy, setOrderBy] = useState(0);
     const [environment, setEnvironment] = useState(0);
+    const [search, setSearch] = useState('');
 
     useEffect(() => {
-        setRows(logs.filter(l => l.status === 'ACTIVE'));
+        setRows(logs.filter(l => showArchives ? l.status === 'ARCHIVED' : l.status === 'ACTIVE'));
     }, [logs]);
 
     const handleCheckAll = () => {
@@ -51,7 +52,7 @@ const Home = (props) => {
             rows.forEach(r => {
                 if (r.checked) dispatch(updateLog({
                     id: r.id,
-                    status: showArchives ? 'active' : 'archived'
+                    status: showArchives ? 'ACTIVE' : 'ARCHIVED'
                 }));
             })
         } else
@@ -67,7 +68,7 @@ const Home = (props) => {
             rows.forEach(r => {
                 if (r.checked) dispatch(updateLog({
                     id: r.id,
-                    status: 'deleted'
+                    status: 'DELETED'
                 }));
             })
         } else 
@@ -79,8 +80,8 @@ const Home = (props) => {
     }
 
     const handleShowArchiveds = () => {
-        if(showArchives) setRows(logs.filter(l => l.status === 'active'));
-        else setRows(logs.filter(l => l.status === 'archived'));
+        if(showArchives) setRows(logs.filter(l => l.status === 'ACTIVE'));
+        else setRows(logs.filter(l => l.status === 'ARCHIVED'));
         setShowArchives(!showArchives);
     }
 
@@ -100,10 +101,13 @@ const Home = (props) => {
     }
 
     function getData(){
-        console.log(environment);
         if (orderBy === 'frequency') return u.sortBy(rows, 'numberEvents').reverse();
         else if (orderBy === 'level') return u.sortBy(rows, 'log_level');
-        return rows.filter(r => environment !== 0 && environment !== 'ALL' ? r.environment == environment : true);
+        return rows.filter(r => {
+            if (environment !== 0 && environment !== 'ALL' && r.environment !== environment) return false;
+            if (search && !r.level_log.match(new RegExp(search, 'gi')) && !r.description.match(new RegExp(search, 'gi')) && !r.number_events.toString().match(new RegExp(search, 'gi'))) return false;
+            return true;
+        });
     }
 
     return (
@@ -127,8 +131,11 @@ const Home = (props) => {
                                 <MenuItem value='frequency' style={{fontFamily: 'Gotham'}}>Frequência</MenuItem>
                             </Select>
                         </div>
-                        <TextField label="Busque por level, descrição ou frequência"
+                        <TextField 
+                                label="Busque por level, descrição ou número de eventos"
                                 variant="outlined"
+                                value={search}
+                                onChange={(e) => setSearch(e.target.value)}
                                 style={{width: '55%'}}
                                 InputProps={{
                                         endAdornment: (
@@ -159,9 +166,9 @@ const Home = (props) => {
                         <Table>
                             <TableHead style={{background: '#5063f0'}}>
                             <TableRow>
-                                <TableCell key='a'><Checkbox style={{color: 'white'}} labelStyle={{color: 'white'}} onClick={handleCheckAll}/></TableCell>
+                                <TableCell key='a'><Checkbox style={{color: 'white'}} labelstyle={{color: 'white'}} onClick={handleCheckAll}/></TableCell>
                                 <TableCell key='b' style={styles.tableHeader}>Level</TableCell>
-                                <TableCell key='c' style={styles.tableHeader}>Log</TableCell>
+                                <TableCell key='c' style={styles.tableHeader}>Descrição</TableCell>
                                 <TableCell key='d' style={styles.tableHeader}>Eventos</TableCell>
                             </TableRow>
                             </TableHead>
@@ -169,7 +176,7 @@ const Home = (props) => {
                                 {getData().map((row, i) => {
                                     return(
                                         <TableRow key={row.id} onClick={() => props.history.push({pathname: '/logInfo/' + row.id})} style={{cursor: 'pointer'}}>
-                                            <TableCell key={row.id + '_1'} onClick={(e) => e.stopPropagation()}><Checkbox color="black" onClick={() => handleCheckRow(row.id)} checked={row.checked}/></TableCell>
+                                            <TableCell key={row.id + '_1'} onClick={(e) => e.stopPropagation()}><Checkbox style={{color: "black"}} onClick={() => handleCheckRow(row.id)} checked={row.checked}/></TableCell>
                                             <TableCell key={row.id + '_2'} style={{fontFamily: 'Gotham'}}>{getLabel(row)}</TableCell>
                                             <TableCell key={row.id + '_3'} style={{fontFamily: 'Gotham'}}>{row.description}</TableCell>
                                             <TableCell key={row.id + '_4'} style={{fontFamily: 'Gotham'}}>{row.number_events}</TableCell>

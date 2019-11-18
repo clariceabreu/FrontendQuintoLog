@@ -16,12 +16,19 @@ export const getLogs = () => {
             })
         })
         .catch((error) => {
-            console.log(error);
-            dispatch(showToast({
-                open: true,
-                message: 'Erro ao receber dados',
-                type: 'error'
-            }));
+            if (error.response && error.response.status && error.response.status === 403)
+                dispatch(showToast({
+                    open: true,
+                    message: 'Acesso negado, faça login novamente',
+                    type: 'error'
+                }));
+            else 
+                dispatch(showToast({
+                    open: true,
+                    message: 'Erro ao receber dados',
+                    type: 'error'
+                }));
+            
         });
     }
 }
@@ -30,10 +37,10 @@ export const updateLog = (body) => {
     return (dispatch, getState) => {
         const { logs } = getState();
 
-        Axios.put('/v1/logs', body)
-        .then((response) => {
+        Axios.put('https://quinto-log-back.herokuapp.com/v1/logs/' + body.id, body)
+        .then(() => {
             let result = [...logs];
-            if (body.status === 'deleted') result = logs.filter(l => l.id != response.data)
+            if (body.status === 'DELETED') result = logs.filter(l => l.id !== body.id);
             else {
                 const index = logs.findIndex(l => l.id === body.id);
                 result[index].status = body.status;
@@ -49,8 +56,8 @@ export const updateLog = (body) => {
             dispatch(showToast({
                 open: true,
                 message: 
-                    body.status === 'deleted' ? 'Erro ao apagar dado(s)' : 
-                    body.status === 'archived' ? 'Erro ao arquivar dado(s)' : 
+                    body.status === 'DELETED' ? 'Erro ao apagar dado(s)' : 
+                    body.status === 'ARCHIVED' ? 'Erro ao arquivar dado(s)' : 
                         'Erro ao desarquivar dado(s)',
                 type: 'error'
             }));
@@ -65,25 +72,3 @@ export const clearLogs = () => {
         })
     }
 }
-
-
-// export const archiveLog = (body) => {
-//     return (dispatch, getState) => {
-//         const { logs } = getState();
-        
-//         Axios.post( 'PATH' , body)
-//         .then((response) => {
-//             let log = logs.find(l => l.id === response.data.id);
-//             log = response.data;
-
-
-//             dispatch({
-//                 type: SET_LOGS,
-//                 payload: logs
-//             })
-//         })
-//         .catch(() => {
-            
-//         });
-//     }
-// }

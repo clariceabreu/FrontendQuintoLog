@@ -6,6 +6,7 @@ import logo from '../../assets/images/logo-quintolog.png';
 import Toast from '../common/Toast';
 import { register } from '../../actions/Authentication';
 import { showToast } from '../../actions/System';
+import { ChevronLeft } from '@material-ui/icons';
 
 
 const Register = (props) => {
@@ -63,7 +64,7 @@ const Register = (props) => {
                 message: 'A senha deve conter uma letra e um número',
                 type: 'error'
             }));
-        } else if (secQuest == -1){
+        } else if (secQuest === -1){
             dispatch(showToast({
                 open: true,
                 message: 'Escolha uma pergunta de segurança',
@@ -90,6 +91,10 @@ const Register = (props) => {
     return (
         <div style={styles.container}>
             <img src={logo} height={180} width={300} style={{margin: '50px auto 0'}} alt="logo"/>
+            <div style={styles.back} onClick={() => props.history.push({pathname: '/login'})}>
+                <ChevronLeft style={{ fontSize: 40}} />
+                <p style={styles.backText}>Voltar</p>
+            </div>
             <div style={styles.content}>
                 <h1 style={styles.title}>Cadastro</h1>
                 <div style={styles.form}>
@@ -121,7 +126,7 @@ const Register = (props) => {
                             onClick={handleRegister}>
                         {loading ? <CircularProgress size={24} style={{color: 'white'}} /> : 'CADASTRAR'}
                     </Button>
-                    <label style={styles.backButton} onClick={() => props.history.push('/login')}>Voltar</label>
+                    <label style={styles.backButton} onClick={() => props.history.push('/recuperarSenha')}>Esqueci a senha</label>
                     <Toast/>
                 </div>
             </div>
@@ -130,6 +135,17 @@ const Register = (props) => {
 }
 
 const styles = {
+    back: {
+        margin: '20px auto 0',
+        display: 'flex',
+        cursor: 'pointer',
+        width: 475
+    },
+    backText: {
+        fontSize: 18,
+        fontFamily: 'Gotham',
+        marginTop: 12
+    },
     container: {
         display: 'flex', 
         justifyContent: 'center', 
@@ -140,7 +156,7 @@ const styles = {
         borderRadius: 5,
         padding: '40px 30px 60px',
         width: 'fit-content',
-        margin: '70px auto'
+        margin: '5px auto'
     },
     form: {
         display: 'flex', 
