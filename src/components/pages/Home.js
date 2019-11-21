@@ -90,7 +90,7 @@ const Home = (props) => {
     }
 
     const handleChangeRowsPerPage = event => {
-        setRowsPerPage(event.target.value);
+        setRowsPerPage(parseInt(event.target.value));
     };
 
     function getLabel(row){
@@ -102,7 +102,7 @@ const Home = (props) => {
 
     function getData(){
         if (orderBy === 'frequency') return u.sortBy(rows, 'numberEvents').reverse();
-        else if (orderBy === 'level') return u.sortBy(rows, 'log_level');
+        else if (orderBy === 'level') return u.sortBy(rows, 'level_log');
         return rows.filter(r => {
             if (environment !== 0 && environment !== 'ALL' && r.environment !== environment) return false;
             if (search && !r.level_log.match(new RegExp(search, 'gi')) && !r.description.match(new RegExp(search, 'gi')) && !r.number_events.toString().match(new RegExp(search, 'gi'))) return false;
@@ -173,7 +173,7 @@ const Home = (props) => {
                             </TableRow>
                             </TableHead>
                             <TableBody>
-                                {getData().map((row, i) => {
+                                {getData().slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage).map((row, i) => {
                                     return(
                                         <TableRow key={row.id} onClick={() => props.history.push({pathname: '/logInfo/' + row.id})} style={{cursor: 'pointer'}}>
                                             <TableCell key={row.id + '_1'} onClick={(e) => e.stopPropagation()}><Checkbox style={{color: "black"}} onClick={() => handleCheckRow(row.id)} checked={row.checked}/></TableCell>
@@ -189,7 +189,7 @@ const Home = (props) => {
                                     <TablePagination 
                                         rowsPerPageOptions={[5, 10, 25]} 
                                         colSpan={4} 
-                                        count={Math.ceil(rows.length/rowsPerPage)} 
+                                        count={getData().length} 
                                         rowsPerPage={rowsPerPage} 
                                         page={page} 
                                         SelectProps={{
