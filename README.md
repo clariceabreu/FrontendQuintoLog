@@ -19,8 +19,8 @@ The source code is divided in the following sections:
 * *Actions*: where requests to external APIs are made and the data received from them is sent to store
 * *Assets*: where the app font, general layout and images are stored
 * *Components*: where the built layout components are stored
-* *Reducers*: contains the specifications on how the application's state changes in response to actions sent to the store
-* *Store*: contains the application's states, the actions types and the persistence settings
+* *Reducers*: where the specifications on how the application's state changes in response to actions are stored
+* *Store*: where the application's states, actions types and persistence settings are stored
 
 ## Design
 The design is based on Material UI components and icons.
