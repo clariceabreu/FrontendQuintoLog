@@ -27,14 +27,14 @@ The design is based on Material UI components and icons.
 Material UI documentation is available on https://material-ui.com/
 
 ## External Libraries used
-* Material UI Core
-* Material UI Icons
-* Axios: used for the APIs request
-* History: used to save navigation history
-* Moment: used to convert and manage dates 
-* Redux Persist: used to persist the application's states
-* Redux Thunk: used to manage asynchronous actions
-* Underscore: used to help on data manipulation
+* *Material UI Core*
+* *Material UI Icons*
+* *Axios*: used for the APIs request
+* *History*: used to save navigation history
+* *Moment*: used to convert and manage dates 
+* *Redux Persist*: used to persist the application's states
+* *Redux Thunk*: used to manage asynchronous actions
+* *Underscore*: used to help on data manipulation
 
 
 
