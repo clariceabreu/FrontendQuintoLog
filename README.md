@@ -1,5 +1,5 @@
 # Quinto Log - Front End Project
-![alt text](https://github.com/clariceabreu/FrontendQuintoLog/blob/master/public/logo-quintolog.png?raw=true)
+![alt text](https://github.com/clariceabreu/FrontendQuintoLog/blob/master/public/logo-quintolog.png?raw=true =100x50)
 
 This is the front end of the web application Quinto Log available on http://quinto-log.herokuapp.com/
 The front end was entirely develeoped by Clarice Abreu.
