@@ -11,3 +11,30 @@ To run this project use
 npm start
 ```
 
+## Tecnologies
+The app was creating using React, Redux and Hooks.
+
+## Architecture
+The source code is divided in the following sections:
+* *Actions*: where requests to external APIs are made and the data received from them is sent to store
+* *Assets*: where the app font, general layout and images are stored
+* *Components*: where the built layout components are stored
+* *Reducers*: contains the specifications on how the application's state changes in response to actions sent to the store
+* *Store*: contains the application's states, the actions types and the persistence settings
+
+## Design
+The design is based on Material UI components and icons.
+Material UI documentation is available on https://material-ui.com/
+
+## External Libraries used
+* Material UI Core
+* Material UI Icons
+* Axios: used for the APIs request
+* History: used to save navigation history
+* Moment: used to convert and manage dates 
+* Redux Persist: used to persist the application's states
+* Redux Thunk: used to manage asynchronous actions
+* Underscore: used to help on data manipulation
+
+
+
